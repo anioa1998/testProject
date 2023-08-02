@@ -16,7 +16,7 @@ namespace IntuiVisionTest.Models.Dto
         public long Population { get; set; }
 
 		[MaxLength(50)]
-		public string CommonVehicle { get; set; }
+		public string? CommonVehicle { get; set; }
 	}
 }
 

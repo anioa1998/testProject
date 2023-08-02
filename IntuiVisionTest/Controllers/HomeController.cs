@@ -51,9 +51,10 @@ namespace IntuiVisionTest.Controllers
         }
 
         [HttpGet("GetByVehicle/{vehicle}")]
-        public ActionResult<List<CityDTO>> GetCityByVehicle([FromQuery]string vehicle) //Może lepiej enum żeby nie było ryzyka case sensitive itd.
+        public ActionResult<List<CityDTO>> GetCityByVehicle(string vehicle) //Może lepiej enum żeby nie było ryzyka case sensitive itd.
         {
             var result = _cityRepository.GetCitiesByVehicle(vehicle);
+            _vehicleRepository.GetVehiclesToCityDtos(result);
             return Ok(result);
         }
 

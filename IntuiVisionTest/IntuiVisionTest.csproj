@@ -12,6 +12,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.9">
@@ -32,6 +34,7 @@
     <None Remove="Models\Dto\" />
     <None Remove="Repositories\" />
     <None Remove="Repositories\Interfaces\" />
+    <None Remove="MapperProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -39,5 +42,6 @@
     <Folder Include="Models\Dto\" />
     <Folder Include="Repositories\" />
     <Folder Include="Repositories\Interfaces\" />
+    <Folder Include="MapperProfiles\" />
   </ItemGroup>
 </Project>

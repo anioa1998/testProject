@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using IntuiVisionTest.Models.Dto;
+using IntuiVisionTest.Models.Model;
 using IntuiVisionTest.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace IntuiVisionTest.Controllers
 {
@@ -18,28 +18,56 @@ namespace IntuiVisionTest.Controllers
     public class HomeController : Controller
     {
         private readonly ICityRepository _cityRepository;
+        private readonly IVehicleRepository _vehicleRepository;
 
-        public HomeController(ICityRepository cityRepository)
+        public HomeController(ICityRepository cityRepository, IVehicleRepository vehicleRepository)
         {
             _cityRepository = cityRepository;
+            _vehicleRepository = vehicleRepository;
         }
 
-        [HttpGet("GetByCity")]
+        //W założeniach należałoby wyszczególnić czy mogą być zwracane puste listy, czy raczej jeżeli pusta lista => NotFound();
+
+        [HttpGet("GetByCity")] //Raczej to powinien być post żeby obsłużyć fromBody CityDTO. Do query ciężko wrzucić cały model (wedle założeń)
         public ActionResult<CityDTO> GetCityByDto([FromBody]CityDTO cityDto)
         {
-            return Ok(new CityDTO());
+            if(ModelState.IsValid)
+            {
+                var result = _cityRepository.GetCityByCityDraft(cityDto);
+                _vehicleRepository.GetVehiclesToCityDtos(new List<CityDTO>() { result });
+
+                return Ok(result);
+            }
+            return BadRequest();
         }
 
         [HttpGet("GetRandom")]
         public ActionResult<CityDTO> GetCityRandom()
         {
-            return Ok(new CityDTO());
+            var result = _cityRepository.GetRandomCity();
+            _vehicleRepository.GetVehiclesToCityDtos(new List<CityDTO>() { result });
+
+            return Ok(result);
         }
 
         [HttpGet("GetByVehicle/{vehicle}")]
-        public ActionResult<List<CityDTO>> GetCityByVehicle([FromQuery]string vehicle)
+        public ActionResult<List<CityDTO>> GetCityByVehicle([FromQuery]string vehicle) //Może lepiej enum żeby nie było ryzyka case sensitive itd.
         {
-            return Ok(new List<CityDTO>());
+            var result = _cityRepository.GetCitiesByVehicle(vehicle);
+            return Ok(result);
+        }
+
+        [HttpPost("CreateCity")]
+        public ActionResult CreateCity([FromBody] CityDTO cityDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _cityRepository.CreateNewCity(cityDTO);
+
+                if (result) return StatusCode(201); //Gdyby były widoki to zwracane byłoby Uri w metodzie Created() do odpowiedniego widoku
+
+            }
+            return BadRequest();
         }
     }
 }
